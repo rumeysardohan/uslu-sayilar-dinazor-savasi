@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="8. sınıf üslü ifadelerde çarpma için dinozor çağında geçen takım yarışı">
+<title>Üslü Sayılar Dinozor Savaşı</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Rubik:wght@400;600;800&family=Space+Mono:wght@700&display=swap">
+<style>
+/* Layout: alacakaranlıkta tarih öncesi vadi — üstte yarış pisti, altta taş tablette soru kartı */
+:root{
+  --sky-top:#2b2140; --sky-mid:#7a3b3a; --horizon:#e08a3c;
+  --ground:#1d1810; --stone:#2b241a; --stone-2:#382f22; --bone:#f4ead3; --dust:#c7b796;
+  --lava:#ff8a3d; --moss:#9cc75a; --blood:#ff5e57;
+  --f-display:"Rubik Dirt","Impact","Arial Black",sans-serif;
+  --f-body:"Rubik","Trebuchet MS",system-ui,sans-serif;
+  --f-num:"Space Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{margin:0;background:var(--ground);color:var(--bone);font-family:var(--f-body);font-size:16px;line-height:1.5;overflow-x:hidden}
+button{font:inherit;cursor:pointer}
+sup{font-size:.62em;position:relative;top:-.15em;line-height:0}
+[hidden]{display:none!important}
+
+/* ---------- ARKA PLAN ---------- */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background:linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 48%,var(--horizon) 68%,#5a3420 80%,var(--ground) 100%)}
+.sun{position:absolute;left:62%;top:46%;width:30vmin;height:30vmin;border-radius:50%;
+  background:radial-gradient(circle,#ffd9a0 0,#ffb15c 35%,transparent 70%);opacity:.75}
+.volcano{position:absolute;right:4%;bottom:22%;width:min(46vw,520px);aspect-ratio:2/1;background:#24161a;
+  clip-path:polygon(0 100%,38% 12%,46% 6%,54% 6%,62% 14%,100% 100%)}
+.lava{position:absolute;right:calc(4% + min(46vw,520px)*.43);bottom:calc(22% + min(46vw,520px)*.47);width:min(5vw,56px);height:min(5vw,56px);
+  border-radius:50%;background:radial-gradient(circle,#ffcf6b,#ff6a2b 45%,transparent 72%);filter:blur(2px);animation:glow 3s ease-in-out infinite}
+.smoke{position:absolute;right:calc(4% + min(46vw,520px)*.4);bottom:calc(22% + min(46vw,520px)*.52);width:min(14vw,160px);height:min(30vw,300px);
+  background:radial-gradient(ellipse at 50% 90%,#ffffff26,transparent 60%),radial-gradient(ellipse at 40% 40%,#ffffff1a,transparent 55%);filter:blur(10px)}
+.hill{position:absolute;left:0;right:0;bottom:0}
+.hill.h1{height:34%;background:#3a2620;clip-path:polygon(0 40%,12% 22%,26% 38%,40% 18%,55% 34%,70% 20%,84% 36%,100% 24%,100% 100%,0 100%)}
+.hill.h2{height:22%;background:#20160f;clip-path:polygon(0 30%,18% 12%,33% 32%,52% 10%,68% 30%,85% 14%,100% 30%,100% 100%,0 100%)}
+.sil{position:absolute;filter:brightness(0);line-height:1;user-select:none}
+.sil.far{opacity:.35;filter:brightness(0) blur(.5px)}
+.walker{position:absolute;bottom:31%;font-size:clamp(40px,7vw,90px);filter:brightness(0);opacity:.45;animation:walk 70s linear infinite}
+.walker span{display:inline-block;transform:scaleX(-1)}
+.ptero{position:absolute;top:14%;font-size:28px;color:#000;opacity:.5;animation:fly 40s linear infinite;font-family:var(--f-num)}
+@keyframes glow{50%{transform:scale(1.25);opacity:.8}}
+@keyframes walk{from{left:-12%}to{left:108%}}
+@keyframes fly{from{left:110%;transform:translateY(0)}50%{transform:translateY(30px)}to{left:-10%;transform:translateY(0)}}
+
+/* ---------- SAYFA ---------- */
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:18px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:calc(20px + env(safe-area-inset-top,0px)) calc(40px + env(safe-area-inset-bottom,0px))}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:10px}
+h1{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,6vw,3.6rem);line-height:.95;margin:0;letter-spacing:.01em;
+  text-shadow:0 3px 0 #00000080;text-wrap:balance}
+h1 em{font-style:normal;color:var(--lava)}
+.era{font-family:var(--f-num);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dust)}
+.tablet{background:color-mix(in srgb,var(--stone) 92%,transparent);border:2px solid #4a3d2b;border-radius:18px;
+  box-shadow:0 14px 40px #0008, inset 0 1px 0 #ffffff12;backdrop-filter:blur(3px)}
+h2{font-family:var(--f-display);font-weight:400;font-size:1.5rem;margin:0;color:var(--lava)}
+.label{font-size:.75rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--dust)}
+.btn{border:0;border-radius:12px;padding:13px 22px;font-weight:800;font-size:1.05rem;background:var(--lava);color:#2a1406;box-shadow:0 4px 0 #a2481a}
+.btn:hover{filter:brightness(1.08)} .btn:active{transform:translateY(2px);box-shadow:0 2px 0 #a2481a}
+.btn.moss{background:var(--moss);color:#16200a;box-shadow:0 4px 0 #5d7d2f}
+.btn.ghost{background:transparent;color:var(--bone);border:2px solid #5b4b35;box-shadow:none}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--moss);outline-offset:2px}
+
+/* kurulum */
+.setup{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px}
+.setup .tablet{padding:22px;display:flex;flex-direction:column;gap:14px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field select,.field input{font:inherit;padding:10px 12px;border-radius:10px;border:2px solid #4a3d2b;background:var(--stone-2);color:var(--bone);min-width:0}
+.tin{display:flex;gap:10px;align-items:center}
+.tin .em{font-size:1.8rem;width:44px;text-align:center}
+.tin input{flex:1}
+.rules{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.rules li{display:flex;gap:12px;align-items:flex-start}
+.rules .ic{flex:none;width:40px;height:40px;border-radius:10px;background:var(--stone-2);display:grid;place-items:center;font-size:1.3rem}
+.law{font-family:var(--f-num);background:var(--stone-2);border-radius:8px;padding:2px 8px;white-space:nowrap}
+
+/* pist */
+.track{padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.track-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.lane{display:grid;grid-template-columns:150px minmax(0,1fr);gap:12px;align-items:center}
+.tag{display:flex;flex-direction:column;min-width:0;padding:6px 10px;border-radius:10px;background:var(--stone-2);border-left:6px solid var(--c)}
+.tag b{font-size:.92rem;line-height:1.2;overflow-wrap:anywhere}
+.tag small{font-family:var(--f-num);color:var(--dust);font-size:.75rem}
+.lane.active .tag{background:color-mix(in srgb,var(--c) 30%,var(--stone-2))}
+.road{position:relative;height:64px;border-radius:12px;
+  background:repeating-linear-gradient(90deg,transparent 0 calc(100%/var(--n) - 2px),#ffffff1c calc(100%/var(--n) - 2px) calc(100%/var(--n))),
+  linear-gradient(180deg,#4a3826,#2c2116);border:2px solid #4a3d2b;overflow:visible}
+.road .nest{position:absolute;right:-6px;top:50%;transform:translateY(-50%);font-size:2rem}
+.dino{position:absolute;bottom:4px;left:calc(var(--p) * (100% - 64px));width:60px;text-align:center;font-size:44px;line-height:1;
+  transition:left .9s cubic-bezier(.4,1.5,.5,1)}
+.dino span{display:inline-block;transform:scaleX(-1);filter:var(--hue)}
+.dino::after{content:"";position:absolute;left:10px;right:10px;bottom:-2px;height:8px;border-radius:50%;background:var(--c);opacity:.8;z-index:-1}
+.dino.hop span{animation:hop .5s ease 2}
+.dino.hit span{animation:shake .5s ease}
+.meteor{position:absolute;font-size:30px;animation:fall .7s ease-in forwards;pointer-events:none}
+.boom{position:absolute;font-size:34px;animation:pop .7s ease-out forwards;pointer-events:none}
+@keyframes hop{50%{transform:scaleX(-1) translateY(-16px) rotate(-8deg)}}
+@keyframes shake{20%,60%{transform:scaleX(-1) translateX(-6px)}40%,80%{transform:scaleX(-1) translateX(6px)}}
+@keyframes fall{from{transform:translate(60px,-90px) rotate(-30deg);opacity:1}to{transform:translate(0,0) rotate(0);opacity:0}}
+@keyframes pop{from{transform:scale(.4);opacity:1}to{transform:scale(1.8);opacity:0}}
+
+/* arena */
+.arena{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:18px;align-items:start}
+.qbox{padding:22px;display:flex;flex-direction:column;gap:16px}
+.qhead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.who{display:flex;align-items:center;gap:10px}
+.who .em{font-size:2.2rem}
+.who b{font-family:var(--f-display);font-weight:400;font-size:1.5rem;line-height:1.1}
+.chip{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:99px;background:var(--stone-2);color:var(--dust)}
+.chip.hard{background:#5a2a14;color:#ffb27d}
+.stone{background:linear-gradient(160deg,#5b4c38,#3b3124);border-radius:22px 30px 18px 26px;padding:26px 18px;text-align:center;
+  font-family:var(--f-num);font-size:clamp(1.6rem,4.5vw,2.6rem);box-shadow:inset 0 2px 0 #ffffff1a,inset 0 -4px 0 #0005;color:#fff6e0;overflow-wrap:anywhere}
+.stone.small{font-family:var(--f-body);font-weight:600;font-size:clamp(1.1rem,2.6vw,1.4rem)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{border:2px solid #5b4b35;background:var(--stone-2);color:var(--bone);border-radius:12px;padding:14px 10px;min-height:58px;
+  font-family:var(--f-num);font-size:1.2rem;text-align:center}
+.opt.txt{font-family:var(--f-body);font-size:.98rem;font-weight:600}
+.opt:hover:not(:disabled){border-color:var(--lava)}
+.opt:disabled{cursor:default;opacity:.7}
+.opt.ok{border-color:var(--moss);background:#2f3d1c;opacity:1}
+.opt.no{border-color:var(--blood);background:#4a1f1c;opacity:1}
+.fb{border-radius:12px;padding:12px 14px;font-weight:600}
+.fb.ok{background:#2f3d1c;border:2px solid var(--moss)}
+.fb.no{background:#4a1f1c;border:2px solid var(--blood)}
+.fb strong{display:block;font-family:var(--f-display);font-weight:400;font-size:1.25rem}
+.attack{border:2px dashed var(--lava);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;background:#3a1f12}
+.attack .btns{display:flex;flex-wrap:wrap;gap:8px}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.side{padding:18px;display:flex;flex-direction:column;gap:12px}
+.log{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;max-height:340px;overflow:auto;font-size:.92rem}
+.log li{padding:8px 10px;background:var(--stone-2);border-radius:8px;border-left:4px solid var(--c,#5b4b35)}
+.hint{font-size:.85rem;color:var(--dust);margin:0}
+
+/* son */
+.end{padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.end .big{font-size:5rem;line-height:1}
+.end .win{font-family:var(--f-display);font-size:clamp(1.8rem,5vw,2.8rem);color:var(--lava);line-height:1.05}
+.rank{list-style:none;margin:0;padding:0;display:grid;gap:8px;width:min(100%,420px)}
+.rank li{display:flex;justify-content:space-between;gap:10px;background:var(--stone-2);border-radius:10px;padding:10px 14px;font-weight:800;border-left:6px solid var(--c)}
+.rank .n{font-family:var(--f-num)}
+footer{font-size:.8rem;color:var(--dust);text-align:center}
+
+@media (max-width:820px){.arena{grid-template-columns:1fr}}
+@media (max-width:560px){
+  .lane{grid-template-columns:1fr;gap:4px}
+  .tag{flex-direction:row;justify-content:space-between;align-items:center;gap:8px}
+  .opts{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr}
+  .dino{font-size:36px;width:50px;left:calc(var(--p) * (100% - 54px))}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="sun"></div>
+  <div class="smoke"></div>
+  <div class="volcano"></div>
+  <div class="lava"></div>
+  <div class="ptero">⌄ ⌄</div>
+  <div class="hill h1"></div>
+  <div class="sil far" style="left:6%;bottom:30%;font-size:clamp(50px,9vw,120px)">🦕</div>
+  <div class="sil far" style="left:40%;bottom:31%;font-size:clamp(30px,5vw,70px)">🦕</div>
+  <div class="walker"><span>🦕</span></div>
+  <div class="hill h2"></div>
+  <div class="sil" style="left:-2%;bottom:2%;font-size:clamp(110px,22vw,280px)">🌴</div>
+  <div class="sil" style="right:2%;bottom:3%;font-size:clamp(100px,20vw,260px)">🦖</div>
+  <div class="sil" style="left:24%;bottom:1%;font-size:clamp(60px,10vw,130px)">🌿</div>
+  <div class="sil" style="right:28%;bottom:2%;font-size:clamp(70px,12vw,150px)">🦕</div>
+</div>
+
+<main class="wrap">
+  <header>
+    <div>
+      <div class="era">Kretase Dönemi · 66 milyon yıl önce</div>
+      <h1>Üslü Sayılar <em>Dinozor Savaşı</em></h1>
+    </div>
+    <div class="era">8. Sınıf · Üslü İfadeler</div>
+  </header>
+
+  <!-- KURULUM -->
+  <section class="setup" id="setup">
+    <div class="tablet">
+      <h2>Sürüleri topla</h2>
+      <div class="row2">
+        <div class="field"><label class="label" for="count">Takım sayısı</label>
+          <select id="count"><option value="2">2 takım</option><option value="3" selected>3 takım</option><option value="4">4 takım</option></select></div>
+        <div class="field"><label class="label" for="len">Pist uzunluğu</label>
+          <select id="len"><option value="12">Kısa · 12 adım</option><option value="16" selected>Normal · 16 adım</option><option value="22">Uzun · 22 adım</option></select></div>
+      </div>
+      <div id="teamIn" style="display:flex;flex-direction:column;gap:10px"></div>
+      <button class="btn" id="startBtn">Yarışı başlat</button>
+    </div>
+    <div class="tablet">
+      <h2>Savaş kuralları</h2>
+      <ul class="rules">
+        <li><span class="ic">🪨</span><span>Sırası gelen sürü bir <b>taş tablet</b> açar ve üslü ifadenin sonucunu seçer.</span></li>
+        <li><span class="ic">🦖</span><span>Doğru cevap dinozoru <b>2 adım</b> ileri koşturur. <b>Zor kartlar</b> 3 adım kazandırır.</span></li>
+        <li><span class="ic">☄️</span><span>Yanlış cevapta <b>meteor</b> düşer ve dinozor yerinde kalır.</span></li>
+        <li><span class="ic">🔥</span><span>Üst üste <b>3 doğru</b> yapan sürü <b>kükreme saldırısı</b> yapar ve seçtiği rakibi 2 adım geri iter.</span></li>
+        <li><span class="ic">🥚</span><span>Yumurta yuvasına ilk ulaşan sürü savaşı kazanır.</span></li>
+      </ul>
+      <div class="label">Hatırla</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span><span class="law">a<sup>m</sup> · a<sup>n</sup> = a<sup>m+n</sup></span> Aynı taban: üsler toplanır.</span>
+        <span><span class="law">a<sup>n</sup> · b<sup>n</sup> = (a·b)<sup>n</sup></span> Aynı üs: tabanlar çarpılır.</span>
+        <span><span class="law">(a<sup>m</sup>)<sup>n</sup> = a<sup>m·n</sup></span> Üssün üssü: üsler çarpılır.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- OYUN -->
+  <section id="game" hidden style="display:flex;flex-direction:column;gap:18px">
+    <div class="tablet track">
+      <div class="track-head"><h2>Vadi Yarışı</h2><span class="label" id="lenLbl"></span></div>
+      <div id="lanes" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+    <div class="arena">
+      <div class="tablet qbox" id="qbox" aria-live="polite"></div>
+      <aside class="tablet side">
+        <h2>Savaş günlüğü</h2>
+        <ul class="log" id="log"></ul>
+        <p class="hint">İpucu: Önce tabanlara bak. Tabanlar aynıysa üsleri topla. Üsler aynıysa tabanları çarp.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SON -->
+  <section class="tablet end" id="end" hidden></section>
+
+  <footer>Türkiye Yüzyılı Maarif Modeli · 8. sınıf · Üslü ifadeler ve işlemler</footer>
+</main>
+
+<script>
+const S2=s=>`<sup>${s}</sup>`;
+const CARDS=[
+ {cat:"Aynı taban",q:`2${S2(3)} · 2${S2(4)}`,o:[`2${S2(7)}`,`4${S2(7)}`,`2${S2(12)}`,`2${S2(1)}`],why:`Tabanlar aynı, üsler toplanır: 3 + 4 = 7. Sonuç 2${S2(7)}.`},
+ {cat:"Aynı taban",q:`5${S2(2)} · 5${S2(3)}`,o:[`5${S2(5)}`,`10${S2(5)}`,`5${S2(6)}`,`25${S2(5)}`],why:`Taban 5 aynı kalır, 2 + 3 = 5. Sonuç 5${S2(5)}.`},
+ {cat:"Aynı taban",q:`(−3)${S2(2)} · (−3)${S2(4)}`,o:[`(−3)${S2(6)}`,`(−6)${S2(6)}`,`(−3)${S2(8)}`,`9${S2(6)}`],why:`Üsler toplanır: 2 + 4 = 6. Taban (−3) olarak kalır.`},
+ {cat:"Aynı taban",q:`10${S2("−2")} · 10${S2(5)}`,o:[`10${S2(3)}`,`10${S2("−10")}`,`10${S2(7)}`,`10${S2("−3")}`],why:`Üsler toplanır: −2 + 5 = 3. Sonuç 10${S2(3)}.`},
+ {cat:"Aynı taban",q:`7${S2(0)} · 7${S2(4)}`,o:[`7${S2(4)}`,`7${S2(0)}`,`7${S2(5)}`,`14${S2(4)}`],why:`Üsler toplanır: 0 + 4 = 4. Sonuç 7${S2(4)}.`},
+ {cat:"Aynı taban",q:`x${S2(6)} · x${S2("−2")}`,o:[`x${S2(4)}`,`x${S2("−12")}`,`x${S2(8)}`,`2x${S2(4)}`],why:`Üsler toplanır: 6 + (−2) = 4. Sonuç x${S2(4)}.`},
+ {cat:"Aynı taban",q:`(1/2)${S2(3)} · (1/2)${S2(2)}`,o:[`(1/2)${S2(5)}`,`(1/2)${S2(6)}`,`(1/4)${S2(5)}`,`(1/2)${S2(1)}`],why:`Tabanlar aynı, üsler toplanır: 3 + 2 = 5.`},
+ {cat:"Aynı taban",q:`3${S2(5)} · 3${S2("−5")}`,o:[`3${S2(0)} = 1`,`3${S2(10)}`,`9${S2(0)}`,`0`],why:`Üsler toplanır: 5 + (−5) = 0. Sıfırdan farklı her sayının 0. kuvveti 1'dir.`},
+ {cat:"Aynı üs",q:`2${S2(3)} · 5${S2(3)}`,o:[`10${S2(3)}`,`10${S2(6)}`,`7${S2(3)}`,`2${S2(8)}`],why:`Üsler aynı, tabanlar çarpılır: (2 · 5)${S2(3)} = 10${S2(3)}.`},
+ {cat:"Aynı üs",q:`3${S2(2)} · 4${S2(2)}`,o:[`12${S2(2)}`,`7${S2(2)}`,`12${S2(4)}`,`3${S2(6)}`],why:`Ortak üs 2. Tabanlar çarpılır: (3 · 4)${S2(2)} = 12${S2(2)}.`},
+ {cat:"Aynı üs",q:`(−2)${S2(3)} · 5${S2(3)}`,o:[`(−10)${S2(3)}`,`(−10)${S2(6)}`,`3${S2(3)}`,`(−2)${S2(8)}`],why:`Ortak üs 3. Tabanlar çarpılır: ((−2) · 5)${S2(3)} = (−10)${S2(3)}.`},
+ {cat:"Aynı üs",q:`a${S2("n")} · b${S2("n")}`,o:[`(ab)${S2("n")}`,`(a + b)${S2("n")}`,`(ab)${S2("2n")}`,`a${S2("2n")}`],why:`Üsler eşitse tabanlar çarpılır, ortak üs korunur: (ab)${S2("n")}.`},
+ {cat:"Aynı üs",q:`(2/3)${S2(2)} · (3/5)${S2(2)}`,o:[`(2/5)${S2(2)}`,`(5/8)${S2(2)}`,`(6/15)${S2(4)}`,`(5/2)${S2(2)}`],why:`Ortak üs 2. Tabanlar çarpılır: 2/3 · 3/5 = 2/5. Sonuç (2/5)${S2(2)}.`},
+ {cat:"Aynı üs",q:`4${S2(5)} · 25${S2(5)}`,o:[`100${S2(5)}`,`29${S2(5)}`,`100${S2(10)}`,`10${S2(5)}`],why:`Ortak üs 5. Tabanlar çarpılır: 4 · 25 = 100. Sonuç 100${S2(5)}.`},
+ {cat:"Üssün üssü",q:`(2${S2(3)})${S2(4)}`,o:[`2${S2(12)}`,`2${S2(7)}`,`8${S2(7)}`,`2${S2(81)}`],why:`Üssün üssünde üsler çarpılır: 3 · 4 = 12. Sonuç 2${S2(12)}.`},
+ {cat:"Üssün üssü",q:`(5${S2(2)})${S2(3)}`,o:[`5${S2(6)}`,`5${S2(5)}`,`15${S2(2)}`,`5${S2(8)}`],why:`Üsler çarpılır: 2 · 3 = 6. Sonuç 5${S2(6)}.`},
+ {cat:"Üssün üssü",q:`(a${S2("m")})${S2("n")}`,o:[`a${S2("m·n")}`,`a${S2("m+n")}`,`a${S2("m−n")}`,`(a·n)${S2("m")}`],why:`Üssün üssü kuralı: (a${S2("m")})${S2("n")} = a${S2("m·n")}.`},
+ {cat:"Üssün üssü",q:`((−3)${S2(2)})${S2(3)}`,o:[`(−3)${S2(6)}`,`(−3)${S2(5)}`,`(−6)${S2(6)}`,`(−9)${S2(5)}`],why:`Üsler çarpılır: 2 · 3 = 6. Taban (−3) olarak kalır.`},
+ {cat:"Üssün üssü",q:`((1/2)${S2(2)})${S2(3)}`,o:[`(1/2)${S2(6)}`,`(1/2)${S2(5)}`,`(1/6)${S2(2)}`,`(1/2)${S2(8)}`],why:`Üsler çarpılır: 2 · 3 = 6. Sonuç (1/2)${S2(6)}.`},
+ {cat:"Karma",hard:1,q:`2${S2(3)} · 2${S2(2)} · 2${S2(1)}`,o:[`2${S2(6)}`,`6${S2(6)}`,`2${S2(5)}`,`8${S2(6)}`],why:`Aynı tabanın üsleri toplanır: 3 + 2 + 1 = 6. Sonuç 2${S2(6)}.`},
+ {cat:"Karma",hard:1,q:`(3${S2(2)})${S2(2)} · 3${S2(1)}`,o:[`3${S2(5)}`,`3${S2(6)}`,`3${S2(8)}`,`9${S2(3)}`],why:`Önce üssün üssü: (3${S2(2)})${S2(2)} = 3${S2(4)}. Sonra üsler toplanır: 4 + 1 = 5. Sonuç 3${S2(5)}.`},
+ {cat:"Karma",hard:1,q:`(2${S2(2)})${S2(3)} · 5${S2(6)}`,o:[`10${S2(6)}`,`10${S2(11)}`,`7${S2(6)}`,`10${S2(5)}`],why:`(2${S2(2)})${S2(3)} = 2${S2(6)}. Üsler aynı oldu: 2${S2(6)} · 5${S2(6)} = 10${S2(6)}.`},
+ {cat:"Karma",hard:1,q:`6${S2(4)} · 6${S2(0)} · 6${S2("−1")}`,o:[`6${S2(3)}`,`6${S2(4)}`,`6${S2(5)}`,`6${S2(0)}`],why:`Üsler toplanır: 4 + 0 + (−1) = 3. Sonuç 6${S2(3)}.`},
+ {cat:"Kuralı bul",hard:1,txt:1,q:`3${S2(2)} · 3${S2(4)} = 3${S2(8)} yazan arkadaşına ne dersin?`,o:[`Yanlış, sonuç 3${S2(6)} olmalı.`,`Doğru, üsler çarpılır.`,`Yanlış, sonuç 6${S2(6)} olmalı.`,`Doğru, tabanlar toplanır.`],why:`Aynı tabanda üsler toplanır: 2 + 4 = 6. Üsler çarpılmaz.`},
+ {cat:"Kuralı bul",hard:1,txt:1,q:`2${S2(3)} · 3${S2(2)} için hangisi doğrudur?`,o:[`Bu kurallarla tek bir üslü ifade yapılamaz.`,`6${S2(5)} olur.`,`2${S2(5)} · 3${S2(5)} olur.`,`5${S2(6)} olur.`],why:`Tabanlar da üsler de farklı. Çarpma kurallarıyla tek üslü ifadeye dönüşmez (sonuç 8 · 9 = 72).`},
+ {cat:"Kuralı bul",hard:1,q:`(2 · 7)${S2(3)} ifadesinin eşiti`,o:[`2${S2(3)} · 7${S2(3)}`,`2${S2(3)} · 7`,`2 · 7${S2(3)}`,`14${S2(6)}`],why:`Bir çarpımın kuvveti, çarpanların aynı kuvvetlerinin çarpımıdır: 2${S2(3)} · 7${S2(3)}.`},
+ {cat:"Kuralı bul",hard:1,q:`2${S2(4)} · 2${S2("?")} = 2${S2(10)} ise ? kaçtır?`,o:[`6`,`14`,`40`,`2,5`],why:`Aynı tabanda üsler toplanır: 4 + ? = 10, yani ? = 6.`}
+];
+const DINOS=[
+ {name:"T-Rex Sürüsü",em:"🦖",c:"#ff8a3d",hue:"none"},
+ {name:"Brontozor Klanı",em:"🦕",c:"#9cc75a",hue:"none"},
+ {name:"Raptor Avcıları",em:"🦖",c:"#5ec8e0",hue:"hue-rotate(150deg) saturate(1.3)"},
+ {name:"Triceratops Ordusu",em:"🦕",c:"#e27ad9",hue:"hue-rotate(230deg) saturate(1.4)"}
+];
+const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+let G=null;
+
+function renderInputs(){
+  const n=+$("#count").value, box=$("#teamIn");
+  const old=[...box.querySelectorAll("input")].map(i=>i.value);
+  box.innerHTML="";
+  for(let i=0;i<n;i++){
+    const d=DINOS[i];
+    box.insertAdjacentHTML("beforeend",`<div class="tin"><span class="em" style="filter:${d.hue}">${d.em}</span>
+      <div class="field" style="flex:1"><label class="label" for="t${i}">Takım ${i+1}</label>
+      <input id="t${i}" maxlength="22" value="${esc(old[i]??d.name)}" style="border-left:6px solid ${d.c}"></div></div>`);
+  }
+}
+$("#count").addEventListener("change",renderInputs); renderInputs();
+
+$("#startBtn").addEventListener("click",()=>{
+  const n=+$("#count").value;
+  G={teams:[...Array(n)].map((_,i)=>({...DINOS[i],name:$("#t"+i).value.trim()||DINOS[i].name,pos:0,streak:0,right:0,wrong:0})),
+     finish:+$("#len").value,turn:0,deck:shuffle(CARDS),card:null,busy:false};
+  $("#setup").hidden=true;$("#end").hidden=true;$("#game").hidden=false;$("#log").innerHTML="";
+  $("#lenLbl").textContent=`Yumurta yuvasına ${G.finish} adım`;
+  drawLanes(); log(null,"Sürüler vadide dizildi. Yarış başlıyor!"); newCard();
+  $("#game").scrollIntoView({behavior:"smooth",block:"start"});
+});
+
+function drawLanes(){
+  $("#lanes").innerHTML=G.teams.map((t,i)=>`
+    <div class="lane ${i===G.turn?"active":""}" style="--c:${t.c}">
+      <div class="tag"><b>${esc(t.name)}</b><small>${t.pos} / ${G.finish} adım${t.streak>=2?" · 🔥"+t.streak:""}</small></div>
+      <div class="road" id="road${i}" style="--n:${G.finish}"><span class="nest" aria-hidden="true">🥚</span>
+        <div class="dino" id="dino${i}" style="--p:${Math.min(1,t.pos/G.finish)};--c:${t.c};--hue:${t.hue}"><span>${t.em}</span></div></div>
+    </div>`).join("");
+}
+function updateLanes(){
+  G.teams.forEach((t,i)=>{
+    const lane=$("#lanes").children[i];
+    lane.classList.toggle("active",i===G.turn);
+    lane.querySelector("small").textContent=`${t.pos} / ${G.finish} adım${t.streak>=2?" · 🔥"+t.streak:""}`;
+    $("#dino"+i).style.setProperty("--p",Math.min(1,t.pos/G.finish));
+  });
+}
+function fx(i,cls,emoji){
+  const d=$("#dino"+i); d.classList.remove("hop","hit"); void d.offsetWidth; d.classList.add(cls);
+  if(emoji){const r=$("#road"+i),e=document.createElement("span");e.className=emoji==="☄️"?"meteor":"boom";e.textContent=emoji;
+    e.style.left=`calc(${d.style.getPropertyValue("--p")} * (100% - 64px) + 14px)`;e.style.bottom="10px";r.appendChild(e);setTimeout(()=>e.remove(),800);}
+}
+function log(t,msg){
+  const li=document.createElement("li"); if(t)li.style.setProperty("--c",t.c); li.innerHTML=msg;
+  $("#log").prepend(li);
+}
+
+function newCard(){
+  if(!G.deck.length) G.deck=shuffle(CARDS);
+  const c=G.deck.pop(), order=shuffle([0,1,2,3]);
+  G.card={...c,order}; G.answered=false;
+  const t=G.teams[G.turn];
+  $("#qbox").innerHTML=`
+    <div class="qhead"><div class="who"><span class="em" style="filter:${t.hue}">${t.em}</span><div><div class="label">Sıra sende</div><b style="color:${t.c}">${esc(t.name)}</b></div></div>
+      <span class="chip ${c.hard?"hard":""}">${c.cat}${c.hard?" · zor kart · 3 adım":" · 2 adım"}</span></div>
+    <div class="stone ${c.txt?"small":""}">${c.q}</div>
+    <div class="label" style="text-align:center">Doğru sonucu seç</div>
+    <div class="opts">${order.map(k=>`<button class="opt ${c.txt?"txt":""}" data-k="${k}">${c.o[k]}</button>`).join("")}</div>
+    <div id="after"></div>`;
+  $("#qbox").querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>answer(+b.dataset.k,b)));
+  $("#qbox").querySelector(".opt").focus({preventScroll:true});
+}
+
+async function answer(k,btn){
+  if(G.answered)return; G.answered=true;
+  const c=G.card,t=G.teams[G.turn],ok=k===0,i=G.turn;
+  $("#qbox").querySelectorAll(".opt").forEach(b=>{b.disabled=true;if(+b.dataset.k===0)b.classList.add("ok");});
+  if(!ok)btn.classList.add("no");
+  const after=$("#after");
+  if(ok){
+    const step=c.hard?3:2; t.pos=Math.min(G.finish,t.pos+step); t.streak++; t.right++;
+    after.innerHTML=`<div class="fb ok"><strong>Kükre! ${step} adım ileri</strong>${c.why}</div>`;
+    updateLanes(); fx(i,"hop");
+    log(t,`<b>${esc(t.name)}</b> doğru bildi ve ${step} adım koştu.`);
+    if(t.pos>=G.finish){await wait(1000);return finish(t);}
+    const rivals=G.teams.map((r,j)=>({r,j})).filter(x=>x.j!==i&&x.r.pos>0);
+    if(t.streak>=3&&rivals.length){
+      after.insertAdjacentHTML("beforeend",`<div class="attack" style="margin-top:12px"><strong style="font-family:var(--f-display);font-weight:400;font-size:1.3rem;color:var(--lava)">🔥 Kükreme saldırısı!</strong>
+        <span>Üst üste 3 doğru yaptınız. Bir rakibi 2 adım geri itin.</span>
+        <div class="btns">${rivals.map(x=>`<button class="btn ghost atk" data-j="${x.j}" style="border-color:${x.r.c}">${x.r.em} ${esc(x.r.name)}</button>`).join("")}</div></div>`);
+      after.querySelectorAll(".atk").forEach(b=>b.addEventListener("click",()=>{
+        const j=+b.dataset.j,r=G.teams[j]; r.pos=Math.max(0,r.pos-2); t.streak=0;
+        updateLanes(); fx(j,"hit","💥");
+        log(t,`<b>${esc(t.name)}</b> kükredi! <b>${esc(r.name)}</b> 2 adım geri savruldu.`);
+        after.querySelector(".attack").innerHTML=`<strong style="color:var(--lava)">💥 ${esc(r.name)} geri püskürtüldü!</strong>`;
+        nextBtn(after);
+      }));
+      return;
+    }
+  }else{
+    t.streak=0; t.wrong++;
+    after.innerHTML=`<div class="fb no"><strong>☄️ Meteor düştü! Bu tur yerinde kaldın</strong>${c.why}</div>`;
+    fx(i,"hit","☄️"); updateLanes();
+    log(t,`<b>${esc(t.name)}</b> meteora yakalandı, yerinde kaldı.`);
+  }
+  nextBtn(after);
+}
+function nextBtn(after){
+  const n=G.teams[(G.turn+1)%G.teams.length];
+  after.insertAdjacentHTML("beforeend",`<div class="actions" style="margin-top:14px"><button class="btn moss" id="nextBtn">Sıra ${n.em} ${esc(n.name)}</button></div>`);
+  $("#nextBtn").addEventListener("click",()=>{G.turn=(G.turn+1)%G.teams.length;updateLanes();newCard();});
+  $("#nextBtn").focus({preventScroll:true});
+}
+
+function finish(w){
+  log(w,`🥚 <b>${esc(w.name)}</b> yumurta yuvasına ulaştı!`);
+  const rank=G.teams.slice().sort((a,b)=>b.pos-a.pos||b.right-a.right);
+  $("#game").hidden=true;
+  const e=$("#end"); e.hidden=false;
+  e.innerHTML=`<div class="big" style="filter:${w.hue}">${w.em}</div>
+    <div class="label">Vadinin hâkimi</div>
+    <div class="win" style="color:${w.c}">${esc(w.name)}</div>
+    <p style="margin:0;max-width:52ch">Üslü ifadelerin kurallarını en iyi kullanan sürü yumurta yuvasına ilk ulaştı.</p>
+    <ol class="rank">${rank.map((t,i)=>`<li style="--c:${t.c}"><span>${i+1}. ${t.em} ${esc(t.name)}</span><span class="n">${t.pos} adım · ${t.right}✓ ${t.wrong}✗</span></li>`).join("")}</ol>
+    <div class="actions"><button class="btn" id="again">Aynı sürülerle yeniden savaş</button><button class="btn ghost" id="reset">Takımları değiştir</button></div>`;
+  $("#again").addEventListener("click",()=>{G.teams.forEach(t=>{t.pos=0;t.streak=0;t.right=0;t.wrong=0;});G.turn=0;G.deck=shuffle(CARDS);
+    e.hidden=true;$("#game").hidden=false;$("#log").innerHTML="";drawLanes();log(null,"Yeni savaş başladı!");newCard();});
+  $("#reset").addEventListener("click",()=>{e.hidden=true;$("#setup").hidden=false;window.scrollTo({top:0,behavior:"smooth"});});
+  e.scrollIntoView({behavior:"smooth",block:"start"});
+}
+</script>
+</body>
+</html>
